@@ -1,0 +1,312 @@
+:root {
+    --bg-color: #ffe6eb;
+    --envelope-main: #ff8fa3;
+    --envelope-flap: #ff758f;
+    --envelope-pocket: #ff8fa3;
+    --paper-color: #fffdf7;
+    --text-color: #444;
+    --accent-color: #d63447;
+    --shadow: rgba(0, 0, 0, 0.15);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at center, #fff0f3 0%, #ffccd5 100%);
+    font-family: 'Noto Sans Telugu', sans-serif;
+    overflow: hidden;
+}
+
+.container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+/* --- Envelope Wrapper --- */
+.envelope-wrapper {
+    position: relative;
+    width: 300px;
+    height: 200px;
+    margin-bottom: 20px;
+    perspective: 1000px;
+}
+
+/* --- Envelope Body --- */
+.envelope {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--envelope-main);
+    z-index: 5;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- The Pocket (Front Triangle) --- */
+.pocket {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 150px solid transparent;
+    border-right: 150px solid transparent;
+    border-bottom: 110px solid #ff5c7c;
+    z-index: 20;
+}
+
+/* --- The Flap (Top Triangle) --- */
+.flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 150px solid transparent;
+    border-right: 150px solid transparent;
+    border-top: 120px solid var(--envelope-flap);
+    transform-origin: top;
+    transition: transform 0.6s 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 30;
+}
+
+/* --- The Heart Seal --- */
+.seal {
+    position: absolute;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 34px;
+    height: 34px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 40;
+    animation: heartbeat 1.5s infinite;
+}
+
+.heart-icon {
+    color: white;
+    font-style: normal;
+    font-size: 18px;
+    margin-top: 2px;
+}
+
+/* --- The Letter --- */
+.letter {
+    position: absolute;
+    bottom: 0;
+    left: 15px; /* Centered relative to envelope width */
+    width: 270px;
+    height: 180px;
+    background: var(--paper-color);
+    border-radius: 5px;
+    z-index: 10;
+    transition: all 1s ease-in-out;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.letter-text {
+    height: 100%;
+    color: var(--text-color);
+    font-size: 14px;
+    line-height: 1.6;
+    opacity: 0;
+    transition: opacity 0.5s;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #ffb7c5 transparent;
+}
+
+/* Custom Scrollbar */
+.letter-text::-webkit-scrollbar {
+    width: 5px;
+}
+.letter-text::-webkit-scrollbar-thumb {
+    background-color: #ffb7c5;
+    border-radius: 10px;
+}
+
+.header-text {
+    font-weight: 700;
+    color: var(--accent-color);
+    text-align: center;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #ffccd5;
+    padding-bottom: 5px;
+    font-size: 16px;
+}
+
+.signature {
+    margin-top: 20px;
+    text-align: right;
+    font-family: 'Dancing Script', cursive;
+    font-size: 18px;
+    color: var(--accent-color);
+}
+.signature span {
+    font-family: 'Great Vibes', cursive;
+    font-size: 24px;
+}
+
+/* --- Button --- */
+.open-btn {
+    padding: 12px 40px;
+    border: none;
+    background: var(--accent-color);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(214, 52, 71, 0.4);
+    transition: all 0.3s ease;
+    font-family: 'Noto Sans Telugu', sans-serif;
+    z-index: 50;
+    outline: none;
+}
+
+.open-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    background: #c0283a;
+    box-shadow: 0 8px 20px rgba(214, 52, 71, 0.5);
+}
+
+.open-btn:active {
+    transform: scale(0.95);
+}
+
+/* =========================================
+   ANIMATION STATES
+   ========================================= */
+
+/* 1. Open the Flap */
+.envelope-wrapper.open .flap {
+    transform: rotateX(180deg);
+    z-index: 1;
+}
+
+/* 2. PC Animation */
+.envelope-wrapper.open .envelope {
+    transform: translateY(90px);
+}
+
+/* 3. PC Animation: Letter */
+.envelope-wrapper.open .letter {
+    height: 480px;
+    bottom: -100px;
+    z-index: 100;
+    transform: translateY(-100px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    transition-delay: 0.2s;
+}
+
+/* 4. Show Text */
+.envelope-wrapper.open .letter-text {
+    opacity: 1;
+    overflow-y: auto;
+    transition-delay: 0.8s;
+}
+
+/* 5. Hide Button & Seal */
+.envelope-wrapper.open ~ .open-btn {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(50px);
+}
+.envelope-wrapper.open .seal {
+    opacity: 0;
+    animation: none;
+}
+
+/* --- Floating Hearts --- */
+#hearts-container {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+.floating-heart {
+    position: absolute;
+    color: #ff4757;
+    animation: floatUp linear forwards;
+    opacity: 0;
+}
+@keyframes floatUp {
+    0% { transform: translateY(100vh) scale(0); opacity: 1; }
+    100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+}
+@keyframes heartbeat {
+    0% { transform: translateX(-50%) scale(1); }
+    15% { transform: translateX(-50%) scale(1.15); }
+    30% { transform: translateX(-50%) scale(1); }
+    45% { transform: translateX(-50%) scale(1.15); }
+    60% { transform: translateX(-50%) scale(1); }
+    100% { transform: translateX(-50%) scale(1); }
+}
+
+/* =========================================
+   MOBILE RESPONSIVENESS (Updated)
+   ========================================= */
+@media (max-width: 480px) {
+    .envelope-wrapper {
+        width: 280px;
+        height: 180px;
+        /* MOVED DOWN: Pushes the start position down so it's not at the very top */
+        margin-top: 60px; 
+    }
+    .pocket {
+        border-left-width: 140px;
+        border-right-width: 140px;
+    }
+    .flap {
+        border-left-width: 140px;
+        border-right-width: 140px;
+    }
+
+    /* Envelope drops slightly */
+    .envelope-wrapper.open .envelope {
+        transform: translateY(80px); 
+    }
+
+    /* Letter Centers Properly (Lower than before) */
+    .envelope-wrapper.open .letter {
+        width: 90vw;        
+        height: 60vh;       
+        left: 50%;
+        bottom: 0;
+        
+        /* -50% X centers horizontally.
+           -30px Y moves it up slightly from the bottom anchor.
+           (Previously this was -50px, moving it to -30px keeps it lower on screen)
+        */
+        transform: translate(-50%, -30px);
+    }
+    
+    .letter-text {
+        font-size: 13px;
+        padding: 0 5px;
+    }
+    
+    .header-text {
+        font-size: 15px;
+        margin-top: 5px;
+    }
+}
